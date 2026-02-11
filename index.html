@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tap Tap Birdy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: linear-gradient(to top, #87CEEB, #ffffff);
+        font-family: Arial;
+        text-align: center;
+    }
+    canvas {
+        display: block;
+        margin: auto;
+        background: #c2f0ff;
+    }
+    #score {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        font-size: 30px;
+        font-weight: bold;
+        color: #ff6600;
+    }
+</style>
+</head>
+<body>
+
+<div id="score">0</div>
+<canvas id="gameCanvas"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let bird = {
+    x: canvas.width / 4,
+    y: canvas.height / 2,
+    size: 30,
+    velocity: 0
+};
+
+let gravity = 0.5;
+let lift = -10;
+let score = 0;
+let gameOver = false;
+
+function drawBird() {
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.arc(bird.x, bird.y, bird.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(bird.x + 10, bird.y - 5, 5, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function update() {
+    if (gameOver) return;
+
+    bird.velocity += gravity;
+    bird.y += bird.velocity;
+
+    if (bird.y + bird.size > canvas.height) {
+        gameOver = true;
+        alert("Game Over! Score: " + score);
+        location.reload();
+    }
+
+    score++;
+    document.getElementById("score").innerText = score;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBird();
+}
+
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+loop();
+
+document.addEventListener("touchstart", () => {
+    bird.velocity = lift;
+});
+
+document.addEventListener("click", () => {
+    bird.velocity = lift;
+});
+</script>
+
+</body>
+</html>
